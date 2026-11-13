@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -18,6 +20,7 @@
       --accent-blue: #00d2ff;
       --accent-purple: #9d4edd;
       --accent-pink: #ff5376;
+      --accent-supabase: #3ecf8e;
       --text-main: #f0f4fc;
       --text-muted: #8a99ad;
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -70,7 +73,7 @@
       inset: 0;
       overflow: hidden;
       z-index: 2;
-      pointer-events: none; /* children enable pointer events */
+      pointer-events: none;
     }
 
     /* Floating Element Base */
@@ -106,6 +109,12 @@
                   inset 0 1px 1px rgba(255, 255, 255, 0.3);
     }
 
+    .card.card-supabase {
+      border-color: rgba(62, 207, 142, 0.3);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45),
+                  0 0 20px rgba(62, 207, 142, 0.15);
+    }
+
     .card-header {
       display: flex;
       align-items: center;
@@ -124,6 +133,12 @@
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
+    }
+
+    .card-tag.tag-supabase {
+      background: rgba(62, 207, 142, 0.12);
+      border-color: rgba(62, 207, 142, 0.3);
+      color: var(--accent-supabase);
     }
 
     .badge-live {
@@ -243,6 +258,27 @@
       color: var(--text-muted);
       margin-top: 4px;
       font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .supabase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: 12px;
+      background: rgba(62, 207, 142, 0.12);
+      border: 1px solid rgba(62, 207, 142, 0.3);
+      color: var(--accent-supabase);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .supabase-badge:hover {
+      background: rgba(62, 207, 142, 0.25);
     }
 
     .controls-panel {
@@ -323,6 +359,103 @@
       animation: floatHint 3s ease-in-out infinite;
     }
 
+    /* Supabase Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 5, 8, 0.8);
+      backdrop-filter: blur(16px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #0d1117;
+      border: 1px solid rgba(62, 207, 142, 0.3);
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(62, 207, 142, 0.15);
+      user-select: auto;
+      -webkit-user-select: auto;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-supabase);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 22px;
+    }
+
+    .btn-primary {
+      background: var(--accent-supabase) !important;
+      color: #07090e !important;
+      font-weight: 600 !important;
+      padding: 8px 18px !important;
+      border-radius: 8px !important;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-radius: 8px !important;
+    }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.85); }
@@ -360,7 +493,15 @@
       </div>
       <span>ANTIGRAVITY</span>
     </div>
-    <div class="brand-subtitle">MICROGRAVITY LAB // 0.00G</div>
+    <div class="brand-subtitle">
+      <span>MICROGRAVITY LAB // 0.00G</span>
+      <span class="supabase-badge" id="btn-supabase-modal">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span id="supabase-status-text">Supabase Uplink</span>
+      </span>
+    </div>
   </div>
 
   <!-- HUD Telemetry Stats -->
@@ -398,6 +539,12 @@
       </svg>
       <span>Spawn</span>
     </button>
+    <button class="btn" id="btn-launch-capsule">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      <span>+ Cloud Card</span>
+    </button>
     <button class="btn" id="btn-reset">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -407,19 +554,82 @@
     </button>
   </div>
 
+  <!-- Supabase Settings / Capsule Creator Modal -->
+  <div class="modal-overlay" id="supabase-modal">
+    <div class="modal">
+      <div class="modal-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3ecf8e" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Supabase Zero-G Uplink</span>
+      </div>
+      <div class="modal-desc">
+        Connect your Supabase project to persist cosmic cards, broadcast real-time telemetry, and synchronize zero-gravity capsules across all sessions.
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Project URL</label>
+        <input type="text" class="form-input" id="cfg-supabase-url" placeholder="https://your-project.supabase.co" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Anon / Public API Key</label>
+        <input type="password" class="form-input" id="cfg-supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." />
+      </div>
+
+      <div style="margin-top: 16px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+        💡 Run this in your Supabase SQL Editor:
+        <code style="display:block; color:#3ecf8e; margin-top:4px;">create table cosmic_cards (id serial primary key, title text, body text, tag text, metric text);</code>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-close-modal">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-supabase">Save & Sync</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloud Card Creator Modal -->
+  <div class="modal-overlay" id="card-modal">
+    <div class="modal">
+      <div class="modal-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00d2ff" stroke-width="2.5">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        <span>Launch Cloud Card</span>
+      </div>
+      <div class="modal-desc">
+        Broadcast a new zero-gravity floating card to Supabase.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Card Title</label>
+        <input type="text" class="form-input" id="new-card-title" placeholder="e.g. Quantum Entanglement" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Metric / Badge</label>
+        <input type="text" class="form-input" id="new-card-metric" placeholder="e.g. 99.98% Coherence" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message / Description</label>
+        <input type="text" class="form-input" id="new-card-body" placeholder="e.g. Particle states unified in zero gravity." />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-close-card-modal">Cancel</button>
+        <button class="btn btn-primary" id="btn-submit-card">Deploy Into Zero-G</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     /* =========================================================================
-       ANTIGRAVITY PHYSICS & INTERACTION ENGINE
+       ANTIGRAVITY PHYSICS & INTERACTION ENGINE WITH SUPABASE INTEGRATION
        ========================================================================= */
 
-    // Canvas & Stage references
     const bgCanvas = document.getElementById('bg-canvas');
     const bgCtx = bgCanvas.getContext('2d');
     const fxCanvas = document.getElementById('fx-canvas');
     const fxCtx = fxCanvas.getContext('2d');
     const stage = document.getElementById('stage');
 
-    // Telemetry displays
     const statFps = document.getElementById('stat-fps');
     const statCount = document.getElementById('stat-count');
     const statMode = document.getElementById('stat-mode');
@@ -428,6 +638,22 @@
     const btnShockwave = document.getElementById('btn-shockwave');
     const btnAdd = document.getElementById('btn-add');
     const btnReset = document.getElementById('btn-reset');
+    const btnLaunchCapsule = document.getElementById('btn-launch-capsule');
+
+    const supabaseStatusText = document.getElementById('supabase-status-text');
+    const btnSupabaseModal = document.getElementById('btn-supabase-modal');
+    const supabaseModal = document.getElementById('supabase-modal');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnSaveSupabase = document.getElementById('btn-save-supabase');
+    const cfgSupabaseUrl = document.getElementById('cfg-supabase-url');
+    const cfgSupabaseKey = document.getElementById('cfg-supabase-key');
+
+    const cardModal = document.getElementById('card-modal');
+    const btnCloseCardModal = document.getElementById('btn-close-card-modal');
+    const btnSubmitCard = document.getElementById('btn-submit-card');
+    const newCardTitle = document.getElementById('new-card-title');
+    const newCardMetric = document.getElementById('new-card-metric');
+    const newCardBody = document.getElementById('new-card-body');
 
     let width = window.innerWidth;
     let height = window.innerHeight;
@@ -453,13 +679,13 @@
       vy: 0,
       active: false,
       down: false,
-      mode: 'repel' // 'repel' or 'attract'
+      mode: 'repel'
     };
 
     // Shockwaves
     const shockwaves = [];
 
-    // Background Stars / Space Dust
+    // Background Stars
     let stars = [];
     function initStars() {
       stars = [];
@@ -477,7 +703,7 @@
       }
     }
 
-    // Floating Items collection
+    // Floating Items
     const items = [];
     let draggedItem = null;
     let dragOffsetX = 0;
@@ -488,24 +714,20 @@
         this.el = element;
         this.type = type;
         
-        // Physical bounds
         const rect = element.getBoundingClientRect();
         this.w = rect.width || 120;
         this.h = rect.height || 120;
         this.radius = Math.max(this.w, this.h) / 2;
         this.mass = type === 'bubble' ? 0.8 : 2.0;
 
-        // Position & Inertia
         this.x = Math.random() * (width - this.w - 100) + 50;
         this.y = Math.random() * (height - this.h - 150) + 60;
         this.vx = (Math.random() - 0.5) * 0.8;
         this.vy = (Math.random() - 0.5) * 0.8;
 
-        // Rotation
         this.rotation = (Math.random() - 0.5) * 12;
         this.vRot = (Math.random() - 0.5) * 0.08;
 
-        // Zero-G ambient harmonic drift
         this.seedX = Math.random() * 1000;
         this.seedY = Math.random() * 1000;
         this.harmonicSpeed = 0.0012 + Math.random() * 0.001;
@@ -532,7 +754,6 @@
           if (draggedItem === this) {
             draggedItem = null;
             this.isDragged = false;
-            // Throw with inertia from mouse velocity
             this.vx = mouse.vx * 0.65;
             this.vy = mouse.vy * 0.65;
             this.vRot += (Math.random() - 0.5) * 2;
@@ -563,13 +784,13 @@
           return;
         }
 
-        // 1. Ambient Zero-Gravity Brownian Drift (sinusoidal waves)
+        // Ambient Brownian drift
         const driftForceX = Math.sin(time * this.harmonicSpeed + this.seedX) * 0.035;
         const driftForceY = Math.cos(time * this.harmonicSpeed + this.seedY) * 0.035;
         this.vx += driftForceX;
         this.vy += driftForceY;
 
-        // 2. Mouse Anti-Gravity Interaction (Repulsion or Attraction)
+        // Mouse Anti-Gravity Interaction
         if (mouse.active) {
           const cx = this.x + this.w / 2;
           const cy = this.y + this.h / 2;
@@ -588,19 +809,17 @@
             if (mouse.mode === 'repel') {
               this.vx += nx * force * 1.2;
               this.vy += ny * force * 1.2;
-              // Add dynamic momentum from moving mouse
               this.vx += mouse.vx * 0.08 * factor;
               this.vy += mouse.vy * 0.08 * factor;
               this.vRot += (nx * mouse.vy - ny * mouse.vx) * 0.02;
             } else {
-              // Attract
               this.vx -= nx * force * 0.9;
               this.vy -= ny * force * 0.9;
             }
           }
         }
 
-        // 3. Shockwave Impulse Forces
+        // Shockwaves
         for (let i = 0; i < shockwaves.length; i++) {
           const sw = shockwaves[i];
           const cx = this.x + this.w / 2;
@@ -609,7 +828,6 @@
           const dy = cy - sw.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          // If the shockwave wavefront hits this element
           const waveDist = Math.abs(dist - sw.radius);
           if (waveDist < 50 && dist > 2) {
             const impulse = ((50 - waveDist) / 50) * (sw.strength / this.mass) * 0.9;
@@ -619,12 +837,11 @@
           }
         }
 
-        // 4. Vacuum Micro-Damping (keeps motion smooth & perpetual)
+        // Micro-Damping
         this.vx *= 0.985;
         this.vy *= 0.985;
         this.vRot *= 0.96;
 
-        // Speed Cap
         const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
         const maxSpeed = 16;
         if (speed > maxSpeed) {
@@ -632,12 +849,11 @@
           this.vy = (this.vy / speed) * maxSpeed;
         }
 
-        // Position integration
         this.x += this.vx;
         this.y += this.vy;
         this.rotation += this.vRot;
 
-        // 5. Soft Screen Edge Bounce (with restitution)
+        // Screen Edge Bounces
         const bounce = 0.72;
         const margin = 10;
 
@@ -672,7 +888,95 @@
     }
 
     /* =========================================================================
-       ELEMENT FACTORY (CARDS & BUBBLES)
+       SUPABASE CLIENT INTEGRATION
+       ========================================================================= */
+
+    let supabaseClient = null;
+
+    function initSupabase() {
+      const savedUrl = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || '';
+      const savedKey = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || '';
+
+      if (savedUrl && savedKey && window.supabase) {
+        try {
+          supabaseClient = window.supabase.createClient(savedUrl, savedKey);
+          supabaseStatusText.textContent = 'Supabase Connected';
+          supabaseStatusText.parentElement.style.borderColor = '#3ecf8e';
+          loadSupabaseCards();
+        } catch (err) {
+          console.warn('Supabase init error:', err);
+          supabaseStatusText.textContent = 'Supabase Error';
+        }
+      } else {
+        supabaseStatusText.textContent = 'Supabase Setup';
+      }
+    }
+
+    async function loadSupabaseCards() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient
+          .from('cosmic_cards')
+          .select('*')
+          .limit(5);
+
+        if (!error && data && data.length > 0) {
+          data.forEach(item => {
+            const entity = createCardElement({
+              tag: item.tag || 'Supabase',
+              badge: 'CLOUD',
+              title: item.title,
+              body: item.body,
+              metric: item.metric || 'Sync OK',
+              isSupabase: true
+            });
+            items.push(entity);
+          });
+          statCount.textContent = items.length;
+        }
+      } catch (e) {
+        console.warn('Supabase fetch notice:', e);
+      }
+    }
+
+    async function saveCardToSupabase(cardData) {
+      if (!supabaseClient) {
+        // Fallback local spawn
+        const entity = createCardElement({
+          ...cardData,
+          tag: 'Local Capsule',
+          badge: 'ACTIVE'
+        });
+        items.push(entity);
+        statCount.textContent = items.length;
+        triggerShockwave(width / 2, height / 2, 12);
+        return;
+      }
+
+      try {
+        const { error } = await supabaseClient.from('cosmic_cards').insert([{
+          title: cardData.title,
+          body: cardData.body,
+          metric: cardData.metric,
+          tag: 'Supabase'
+        }]);
+
+        const entity = createCardElement({
+          ...cardData,
+          tag: 'Supabase',
+          badge: 'SYNCED',
+          isSupabase: true
+        });
+        items.push(entity);
+        statCount.textContent = items.length;
+        triggerShockwave(width / 2, height / 2, 12);
+      } catch (err) {
+        console.error('Save to Supabase failed:', err);
+      }
+    }
+
+    /* =========================================================================
+       FACTORY & TEMPLATES
        ========================================================================= */
 
     const CARD_TEMPLATES = [
@@ -712,15 +1016,15 @@
 
     function createCardElement(data) {
       const card = document.createElement('div');
-      card.className = 'float-item card';
+      card.className = `float-item card ${data.isSupabase ? 'card-supabase' : ''}`;
       card.style.width = '240px';
       card.innerHTML = `
         <div class="card-header">
-          <span class="card-tag">${data.tag}</span>
+          <span class="card-tag ${data.isSupabase ? 'tag-supabase' : ''}">${data.tag}</span>
           <span class="card-tag badge-live">${data.badge}</span>
         </div>
         <div class="card-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00d2ff" stroke-width="2">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${data.isSupabase ? '#3ecf8e' : '#00d2ff'}" stroke-width="2">
             <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/>
           </svg>
           ${data.title}
@@ -738,8 +1042,7 @@
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
 
-      // Gradient accent variant
-      const hue = Math.floor(Math.random() * 80 + 170); // Cyan to Purple
+      const hue = Math.floor(Math.random() * 80 + 170);
       bubble.style.borderColor = `hsla(${hue}, 80%, 75%, 0.35)`;
       bubble.style.boxShadow = `0 10px 30px rgba(0, 0, 0, 0.4), 0 0 24px hsla(${hue}, 80%, 60%, 0.25)`;
 
@@ -749,16 +1052,13 @@
     }
 
     function seedInitialEntities() {
-      // Clear existing
       stage.innerHTML = '';
       items.length = 0;
 
-      // Add modern glass cards
       CARD_TEMPLATES.forEach(tmpl => {
         items.push(createCardElement(tmpl));
       });
 
-      // Add floating bubbles
       const bubbleSizes = [110, 85, 95, 75, 120, 70, 90];
       bubbleSizes.forEach((size, idx) => {
         const label = BUBBLE_LABELS[idx % BUBBLE_LABELS.length];
@@ -796,7 +1096,7 @@
     }
 
     /* =========================================================================
-       SHOCKWAVE & RIPPLE FX
+       SHOCKWAVE FX
        ========================================================================= */
 
     function triggerShockwave(x, y, strength = 10) {
@@ -811,16 +1111,13 @@
       });
     }
 
-    // Trigger shockwave on background click
     window.addEventListener('pointerdown', (e) => {
-      // If clicking inside interactive controls, ignore
-      if (e.target.closest('.controls-panel') || e.target.closest('.float-item')) return;
+      if (e.target.closest('.controls-panel') || e.target.closest('.float-item') || e.target.closest('.modal')) return;
       triggerShockwave(e.clientX, e.clientY, 12);
     });
 
-    // Spacebar triggers shockwave from center or cursor
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
+      if (e.code === 'Space' && !e.target.closest('input')) {
         e.preventDefault();
         triggerShockwave(
           mouse.active ? mouse.x : width / 2,
@@ -831,7 +1128,7 @@
     });
 
     /* =========================================================================
-       MOUSE & TOUCH TRACKING WITH VELOCITY INERTIA
+       POINTER TRACKING
        ========================================================================= */
 
     function updatePointer(x, y) {
@@ -860,7 +1157,6 @@
       mouse.prevY = -1000;
     });
 
-    // Touch support
     window.addEventListener('touchmove', (e) => {
       if (e.touches.length > 0) {
         updatePointer(e.touches[0].clientX, e.touches[0].clientY);
@@ -868,7 +1164,7 @@
     }, { passive: true });
 
     /* =========================================================================
-       CONTROLS
+       HUD CONTROLS & MODALS
        ========================================================================= */
 
     btnMode.addEventListener('click', () => {
@@ -887,7 +1183,7 @@
       }
     });
 
-    btnShockwave.addEventListener('click', (e) => {
+    btnShockwave.addEventListener('click', () => {
       triggerShockwave(width / 2, height / 2, 16);
     });
 
@@ -900,18 +1196,58 @@
       triggerShockwave(width / 2, height / 2, 10);
     });
 
+    // Supabase Modal triggers
+    btnSupabaseModal.addEventListener('click', () => {
+      cfgSupabaseUrl.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || '';
+      cfgSupabaseKey.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || '';
+      supabaseModal.classList.add('open');
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      supabaseModal.classList.remove('open');
+    });
+
+    btnSaveSupabase.addEventListener('click', () => {
+      const url = cfgSupabaseUrl.value.trim();
+      const key = cfgSupabaseKey.value.trim();
+      localStorage.setItem('ANTIGRAVITY_SUPABASE_URL', url);
+      localStorage.setItem('ANTIGRAVITY_SUPABASE_KEY', key);
+      supabaseModal.classList.remove('open');
+      initSupabase();
+    });
+
+    // Cloud Card Creator Modal
+    btnLaunchCapsule.addEventListener('click', () => {
+      cardModal.classList.add('open');
+    });
+
+    btnCloseCardModal.addEventListener('click', () => {
+      cardModal.classList.remove('open');
+    });
+
+    btnSubmitCard.addEventListener('click', () => {
+      const title = newCardTitle.value.trim() || 'Cosmic Transmission';
+      const metric = newCardMetric.value.trim() || 'Quantum Sync';
+      const body = newCardBody.value.trim() || 'Persisted in microgravity via Supabase.';
+
+      saveCardToSupabase({ title, metric, body });
+
+      newCardTitle.value = '';
+      newCardMetric.value = '';
+      newCardBody.value = '';
+      cardModal.classList.remove('open');
+    });
+
     /* =========================================================================
-       RENDER & ANIMATION LOOP
+       ANIMATION LOOP
        ========================================================================= */
 
-    let lastTime = performance.now();
     let frameCount = 0;
     let lastFpsUpdate = performance.now();
 
     function animate(currentTime) {
       requestAnimationFrame(animate);
 
-      // FPS Calculation
       frameCount++;
       if (currentTime - lastFpsUpdate >= 500) {
         const fps = Math.round((frameCount * 1000) / (currentTime - lastFpsUpdate));
@@ -920,14 +1256,12 @@
         lastFpsUpdate = currentTime;
       }
 
-      // Smooth mouse inertia decay when cursor stops
       mouse.vx *= 0.85;
       mouse.vy *= 0.85;
 
-      // 1. Render Ambient Background Canvas
+      // 1. Background
       bgCtx.clearRect(0, 0, width, height);
 
-      // Dynamic cursor aura / gravitational well glow
       if (mouse.active) {
         const auraGrad = bgCtx.createRadialGradient(
           mouse.x, mouse.y, 0,
@@ -948,7 +1282,6 @@
         bgCtx.fill();
       }
 
-      // Draw drifting space dust & stars
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         s.x += s.speedX;
@@ -967,7 +1300,7 @@
         bgCtx.fill();
       }
 
-      // 2. Render Shockwave FX Canvas
+      // 2. Shockwaves
       fxCtx.clearRect(0, 0, width, height);
       for (let i = shockwaves.length - 1; i >= 0; i--) {
         const sw = shockwaves[i];
@@ -979,7 +1312,6 @@
           continue;
         }
 
-        // Ripple Ring 1 (Electric Blue)
         fxCtx.beginPath();
         fxCtx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
         fxCtx.strokeStyle = `rgba(0, 210, 255, ${(sw.alpha * 0.7).toFixed(2)})`;
@@ -988,7 +1320,6 @@
         fxCtx.shadowBlur = 15;
         fxCtx.stroke();
 
-        // Ripple Ring 2 (Purple secondary echo)
         if (sw.radius > 25) {
           fxCtx.beginPath();
           fxCtx.arc(sw.x, sw.y, sw.radius - 20, 0, Math.PI * 2);
@@ -998,18 +1329,18 @@
           fxCtx.shadowBlur = 10;
           fxCtx.stroke();
         }
-        fxCtx.shadowBlur = 0; // reset
+        fxCtx.shadowBlur = 0;
       }
 
-      // 3. Update & Physics for all Floating Entities
+      // 3. Floating Items
       for (let i = 0; i < items.length; i++) {
         items[i].update(currentTime);
       }
     }
 
-    // Initialize
     resize();
     seedInitialEntities();
+    initSupabase();
     requestAnimationFrame(animate);
   </script>
 </body>
