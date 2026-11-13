@@ -891,11 +891,14 @@
        SUPABASE CLIENT INTEGRATION
        ========================================================================= */
 
+    const DEFAULT_SUPABASE_URL = 'https://zqjnzonkkiwcvmjzhuev.supabase.co';
+    const DEFAULT_SUPABASE_KEY = 'sb_publishable_PUGfLxe8ExfJ0NN3fiBWTQ_9GXM2bHE';
+
     let supabaseClient = null;
 
     function initSupabase() {
-      const savedUrl = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || '';
-      const savedKey = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || '';
+      const savedUrl = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || DEFAULT_SUPABASE_URL;
+      const savedKey = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || DEFAULT_SUPABASE_KEY;
 
       if (savedUrl && savedKey && window.supabase) {
         try {
@@ -1198,8 +1201,8 @@
 
     // Supabase Modal triggers
     btnSupabaseModal.addEventListener('click', () => {
-      cfgSupabaseUrl.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || '';
-      cfgSupabaseKey.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || '';
+      cfgSupabaseUrl.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_URL') || DEFAULT_SUPABASE_URL;
+      cfgSupabaseKey.value = localStorage.getItem('ANTIGRAVITY_SUPABASE_KEY') || DEFAULT_SUPABASE_KEY;
       supabaseModal.classList.add('open');
     });
 
